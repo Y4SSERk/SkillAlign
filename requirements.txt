@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pandas
+sentence-transformers
+faiss-cpu
+networkx
+python-dotenv # For configuration
+pytest      # For testing
