@@ -6,7 +6,7 @@ import time
 sys.path.append('.')
 
 from ml_pipeline.data_ingestion import ingest_all_data
-from ml_pipeline.data_processing import clean_and_merge_data # <--- Renamed function
+from ml_pipeline.data_processing import clean_and_merge_data 
 from ml_pipeline.embedding_generator import generate_and_index_embeddings
 from app.core.config import settings
 
@@ -27,7 +27,7 @@ def run_ml_pipeline():
 
         # 2. Data Processing (This function now returns the final unified DataFrame)
         print("\n--- STAGE 2: Data Processing ---")
-        occupations_df = clean_and_merge_data(raw_data) # <--- Using updated function
+        occupations_df = clean_and_merge_data(raw_data)
 
         if occupations_df is None or occupations_df.empty:
             print("Error: Occupations data is empty after processing.")

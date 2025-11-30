@@ -1,11 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
-import os
-from dotenv import load_dotenv
-
-# Load .env file (if it exists)
-# This will load variables from the .env file into os.environ
-load_dotenv()
 
 # Define the Configuration Settings using Pydantic
 class Settings(BaseSettings):
@@ -31,7 +25,7 @@ class Settings(BaseSettings):
 
     # --- Application Settings ---
     ENVIRONMENT: str = Field(
-        default=os.environ.get("ENVIRONMENT", "development"),
+        default="development",
         description="Application environment (development/production)."
     )
     
