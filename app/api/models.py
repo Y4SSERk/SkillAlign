@@ -28,3 +28,13 @@ class OccupationRecommendation(BaseModel):
 class RecommendationResponse(BaseModel):
     """The main response structure for the recommendations endpoint."""
     recommendations: list[OccupationRecommendation]
+
+class SkillGapItem(BaseModel):
+    skill_uri: str = Field(..., description="ESCO URI of the skill.")
+    skill_label: str = Field(..., description="Human-readable label of the skill.")
+    relation_type: str = Field(..., description="Relation type (e.g. 'essential', 'optional').")
+
+class SkillGapResponse(BaseModel):
+    occupation_uri: str = Field(..., description="ESCO URI of the occupation.")
+    occupation_title: str = Field(..., description="Preferred label/title of the occupation.")
+    required_skills: list[SkillGapItem] = Field(..., description="List of required/essential skills for the occupation.")

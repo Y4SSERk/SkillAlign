@@ -11,6 +11,15 @@ class Settings(BaseSettings):
         default="./data/raw", 
         description="Directory for raw ESCO CSV files."
     )
+    # Added: explicit raw and processed dirs used across the pipeline
+    RAW_DATA_DIR: str = Field(
+        default="./data/raw",
+        description="Directory for raw ESCO CSV files (alias of ESCO_DATA_DIR)."
+    )
+    PROCESSED_DATA_DIR: str = Field(
+        default="./data/processed",
+        description="Directory for processed artifacts (metadata, indexes, graphs)."
+    )
     
     # --- ML Model Artifacts ---
     FAISS_INDEX_PATH: str = Field(
