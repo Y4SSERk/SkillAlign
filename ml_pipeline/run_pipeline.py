@@ -1,30 +1,31 @@
+# ml_pipeline/run_pipeline.py
+
 import sys
 import time
 from pathlib import Path
 
-# Ensure imports work when running from project root
 sys.path.append(".")
 
 from ml_pipeline.data_ingestion import ingest_all_data
 from ml_pipeline.data_processing import clean_and_merge_data
 from ml_pipeline.embedding_generator import generate_and_index_embeddings
-from ml_pipeline.graph_builder import build_esco_graph
+from ml_pipeline.neo4j_etl import load_rich_esco_to_neo4j
 from app.core.config import settings
 
 
 def run_ml_pipeline() -> None:
     """
-    Execute the end-to-end ML pipeline for SkillAlign:
-
-      1) Ingest ESCO CSVs
-      2) Clean & merge into occupation table
-      3) Build ESCO knowledge graph
-      4) Generate embeddings and FAISS index
+    1) Ingest ESCO CSVs
+    2) Clean & merge into occupation table
+    3) Build / refresh rich ESCO graph in Neo4j (all 17 CSVs)
+    4) Generate embeddings and FAISS index
     """
     start_time = time.time()
+
     print("=" * 60)
     print("🚀 Starting SkillAlign ML Pipeline Execution 🚀")
     print(f"Configuration loaded for environment: {settings.ENVIRONMENT}")
+    print(f"Using ESCO data directory: {settings.ESCO_DATA_DIR}")
     print("=" * 60)
 
     try:
@@ -32,15 +33,13 @@ def run_ml_pipeline() -> None:
         print("\n--- STAGE 1: Data Ingestion ---")
         raw_data = ingest_all_data()
 
-        # 2. Data Processing (returns unified occupation DataFrame)
+        # 2. Data Processing
         print("\n--- STAGE 2: Data Processing ---")
         occupations_df = clean_and_merge_data(raw_data)
-
         if occupations_df is None or occupations_df.empty:
             print("Error: occupations data is empty after processing.")
             return
 
-        # Persist occupation metadata for the backend and graph step
         processed_dir = Path(settings.PROCESSED_DATA_DIR)
         processed_dir.mkdir(parents=True, exist_ok=True)
 
@@ -51,38 +50,27 @@ def run_ml_pipeline() -> None:
         )
         print(f"Saved occupation metadata to: {occupation_metadata_path}")
 
-        # 2.5. Graph Construction
-        print("\n--- STAGE 2.5: Graph Construction ---")
+        # 3. Neo4j ETL (rich graph build)
+        print("\n--- STAGE 3: Neo4j Graph ETL ---")
+        load_rich_esco_to_neo4j(raw_data)
 
-        relations_path = Path(settings.RAW_DATA_DIR) / "occupationSkillRelations_en.csv"
-        skills_path = Path(settings.RAW_DATA_DIR) / "skills_en.csv"
-        graph_output_path = processed_dir / "esco_knowledge_graph.gml"
-
-        esco_graph = build_esco_graph(
-            occupations_path=Path(settings.RAW_DATA_DIR) / "occupations_en.csv",
-            relations_path=relations_path,
-            skills_path=skills_path,
-            output_path=graph_output_path,
-        )
-        print(
-            f"Knowledge graph built with "
-            f"{esco_graph.number_of_nodes()} nodes and "
-            f"{esco_graph.number_of_edges()} edges."
-        )
-
-        # 3. Modeling and Indexing
-        print("\n--- STAGE 3: Modeling and Indexing ---")
+        # 4. Modeling and Indexing (embeddings + FAISS)
+        print("\n--- STAGE 4: Modeling and Indexing ---")
         generate_and_index_embeddings(occupations_df)
 
         duration = time.time() - start_time
         print("\n" + "=" * 60)
         print(f"✅ Pipeline completed successfully in {duration:.2f} seconds.")
-        print("FAISS index, occupation metadata, and ESCO knowledge graph are ready.")
+        print("Neo4j graph, FAISS index, and occupation metadata are ready.")
         print("=" * 60)
 
     except FileNotFoundError as e:
         print(f"\nFATAL ERROR: {e}")
-        print("Please ensure all required ESCO CSV files are in the data/raw directory.")
+        print(
+            "Please ensure all required ESCO CSV files are in the directory "
+            f"configured by ESCO_DATA_DIR (currently: {settings.ESCO_DATA_DIR})."
+        )
+        sys.exit(1)
     except Exception as e:
         print(f"\nAn unexpected error occurred: {e}")
         sys.exit(1)

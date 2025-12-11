@@ -9,3 +9,4 @@ pandas==2.3.3
 networkx==3.6
 google-cloud-firestore==2.21.0
 redis==7.1.0
+neo4j==5.25.0

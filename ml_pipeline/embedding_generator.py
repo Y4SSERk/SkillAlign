@@ -13,16 +13,21 @@ from sentence_transformers import SentenceTransformer
 from app.core.config import settings
 
 
-def generate_and_index_embeddings(occupations_df: pd.DataFrame) -> Tuple[faiss.Index, np.ndarray]:
+def generate_and_index_embeddings(
+    occupations_df: pd.DataFrame,
+) -> Tuple[faiss.Index, np.ndarray]:
     """
     Generate embeddings for occupations and create/save a FAISS index.
 
     Expects occupations_df to have:
-      - occupation_uri
-      - occupation_label
-      - text_for_embedding
-    """
+    - occupation_uri
+    - occupation_label
+    - text_for_embedding
 
+    Artifacts written (per PRD v3):
+    - FAISS index at settings.FAISS_INDEX_PATH
+    - occupation_metadata.csv alongside the index
+    """
     required_cols = ["occupation_uri", "occupation_label", "text_for_embedding"]
     for col in required_cols:
         if col not in occupations_df.columns:
@@ -47,10 +52,10 @@ def generate_and_index_embeddings(occupations_df: pd.DataFrame) -> Tuple[faiss.I
     print(f"Creating FAISS index (dimension={dim}, count={len(embeddings)})")
 
     # Use a simple flat L2 index with explicit IDs aligned to row indices
-    index = faiss.IndexFlatL2(dim)
-    index = faiss.IndexIDMap(index)
+    base_index = faiss.IndexFlatL2(dim)
+    index = faiss.IndexIDMap(base_index)
 
-    ids = np.arange(len(embeddings)).astype("int64")
+    ids = np.arange(len(embeddings), dtype="int64")
     index.add_with_ids(embeddings, ids)
 
     # Handle index path
@@ -62,6 +67,7 @@ def generate_and_index_embeddings(occupations_df: pd.DataFrame) -> Tuple[faiss.I
         faiss.write_index(index, str(index_path))
         print(f"FAISS index saved to: {index_path}")
     except Exception as e:
+        # Conservative fallback in case the configured path is not writable
         fallback = Path("data/processed/occupation.index")
         fallback.parent.mkdir(parents=True, exist_ok=True)
         faiss.write_index(index, str(fallback))
@@ -71,10 +77,9 @@ def generate_and_index_embeddings(occupations_df: pd.DataFrame) -> Tuple[faiss.I
         )
         index_path = fallback
 
-    # Save clean metadata aligned with FAISS row order
+    # Save clean metadata aligned with FAISS row order (same row order as occupations_df)
     metadata_path = index_path.parent / "occupation_metadata.csv"
     print(f"Saving metadata to: {metadata_path}")
-
     occupations_df[["occupation_uri", "occupation_label"]].to_csv(
         metadata_path,
         index=False,
