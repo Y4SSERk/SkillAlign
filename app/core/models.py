@@ -22,11 +22,52 @@ class RelCount:
     count: int
 
 
+# --- Catalog domain models ---
+
+
+@dataclass
+class OccupationAutocomplete:
+    """Lightweight occupation for autocomplete/dropdown."""
+
+    uri: str
+    label: str
+
+
+@dataclass
+class SkillAutocomplete:
+    """Lightweight skill for autocomplete/dropdown."""
+
+    uri: str
+    label: str
+
+
+@dataclass
+class OccupationGroup:
+    """Occupation group (ISCO group) for filter dropdowns."""
+
+    uri: str
+    code: str
+    label: str
+
+
+@dataclass
+class SkillGroup:
+    """Skill group for filter dropdowns."""
+
+    uri: str
+    label: str
+
+
+@dataclass
+class ConceptScheme:
+    """Concept scheme (Digital, Green, Research, etc.) for filter dropdowns."""
+
+    uri: str
+    label: str
+
+
 # Additional domain models will be added here as we build out features:
-# - Occupation
-# - Skill
-# - OccupationGroup
-# - SkillGroup
-# - ConceptScheme
+# - Occupation (full)
+# - Skill (full)
 # - Note
 # etc.
