@@ -1,12 +1,7 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.9.1+cpu
-fastapi==0.122.0
-uvicorn[standard]==0.38.0
-pydantic-settings==2.12.0
-sentence-transformers==5.1.2
-faiss-cpu==1.13.0
-pandas==2.3.3
-networkx==3.6
-google-cloud-firestore==2.21.0
-redis==7.1.0
-neo4j==5.25.0
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+neo4j
+faiss-cpu
+python-dotenv
