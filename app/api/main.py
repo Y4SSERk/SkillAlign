@@ -1,6 +1,9 @@
 # app/api/main.py
-# Reads env-backed settings via app.core.settings.
-# Wires Neo4j lifecycle on startup/shutdown.
+
+"""
+SkillAlign API Main Application
+Configures FastAPI app with Neo4j lifecycle and auto-router discovery.
+"""
 
 from __future__ import annotations
 
@@ -17,6 +20,7 @@ settings = get_settings()
 app = FastAPI(
     title="SkillAlign API",
     version="0.1.0",
+    description="ML-powered occupation recommendation system using ESCO taxonomy"
 )
 
 
@@ -50,7 +54,7 @@ def _try_include(module_path: str) -> bool:
     return True
 
 
-# Prefer the real /health router if present; otherwise provide a fallback so the app stays runnable.
+# Health check (fallback if route not implemented)
 if not _try_include("app.api.routes.health"):
     fallback_health_router = APIRouter(tags=["health"])
 
@@ -60,12 +64,10 @@ if not _try_include("app.api.routes.health"):
 
     app.include_router(fallback_health_router)
 
-
-# These will activate automatically once you create the corresponding files.
+# Auto-discover and include routers
 _try_include("app.api.routes.diagnostics")
 _try_include("app.api.routes.catalog")
 _try_include("app.api.routes.occupations")
 _try_include("app.api.routes.skills")
 _try_include("app.api.routes.notes")
-_try_include("app.api.routes.admin_notes")
 _try_include("app.api.routes.recommendations")
