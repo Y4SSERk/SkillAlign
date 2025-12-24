@@ -43,7 +43,7 @@ router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
     - `schemes`: Filter by concept schemes (Digital, Green, Research, etc.)
     """
 )
-async def get_recommendations(
+def get_recommendations(
     request: RecommendationRequest,
     neo4j_client: Neo4jDep
 ) -> RecommendationResponse:
