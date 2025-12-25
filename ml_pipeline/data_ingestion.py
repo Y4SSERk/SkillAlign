@@ -9,7 +9,7 @@ from typing import Dict
 
 import pandas as pd
 
-from app.core.config import settings
+from app.core.settings import get_settings
 
 # Allow very large fields in ESCO CSVs (e.g., conceptSchemes_en.csv)
 csv.field_size_limit(sys.maxsize)
@@ -23,7 +23,7 @@ def load_esco_data(filename: str) -> pd.DataFrame:
     the header correctly for most files, with a special case for
     conceptSchemes_en.csv which may contain very large fields.
     """
-    esco_data_path = Path(settings.ESCO_DATA_DIR)
+    esco_data_path = Path(get_settings().esco_data_dir)
     file_path = esco_data_path / filename
 
     if not file_path.exists():

@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 
-from app.core.config import settings
+from app.core.settings import get_settings
 
 
 def generate_and_index_embeddings(
@@ -25,15 +25,16 @@ def generate_and_index_embeddings(
     - text_for_embedding
 
     Artifacts written (per PRD v3):
-    - FAISS index at settings.FAISS_INDEX_PATH
+    - FAISS index at settings.faiss_index_path
     - occupation_metadata.csv alongside the index
     """
+    settings = get_settings()
     required_cols = ["occupation_uri", "occupation_label", "text_for_embedding"]
     for col in required_cols:
         if col not in occupations_df.columns:
             raise ValueError(f"Missing column '{col}' in occupations_df")
 
-    model_name = settings.MODEL_NAME
+    model_name = settings.model_name
     print(f"Loading Sentence Transformer model: {model_name}")
     model = SentenceTransformer(model_name)
 
@@ -59,7 +60,7 @@ def generate_and_index_embeddings(
     index.add_with_ids(embeddings, ids)
 
     # Handle index path
-    index_path = Path(settings.FAISS_INDEX_PATH)
+    index_path = Path(settings.faiss_index_path)
     if index_path.parent:
         index_path.parent.mkdir(parents=True, exist_ok=True)
 

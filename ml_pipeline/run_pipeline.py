@@ -10,7 +10,7 @@ from ml_pipeline.data_ingestion import ingest_all_data
 from ml_pipeline.data_processing import clean_and_merge_data
 from ml_pipeline.embedding_generator import generate_and_index_embeddings
 from ml_pipeline.neo4j_etl import load_rich_esco_to_neo4j
-from app.core.config import settings
+from app.core.settings import get_settings
 
 
 def run_ml_pipeline() -> None:
@@ -21,11 +21,12 @@ def run_ml_pipeline() -> None:
     4) Generate embeddings and FAISS index
     """
     start_time = time.time()
+    settings = get_settings()
 
     print("=" * 60)
     print("🚀 Starting SkillAlign ML Pipeline Execution 🚀")
-    print(f"Configuration loaded for environment: {settings.ENVIRONMENT}")
-    print(f"Using ESCO data directory: {settings.ESCO_DATA_DIR}")
+    print(f"Configuration loaded for environment: {settings.environment.upper()}")
+    print(f"Using ESCO data directory: {settings.esco_data_dir}")
     print("=" * 60)
 
     try:
@@ -40,7 +41,7 @@ def run_ml_pipeline() -> None:
             print("Error: occupations data is empty after processing.")
             return
 
-        processed_dir = Path(settings.PROCESSED_DATA_DIR)
+        processed_dir = Path(settings.processed_data_dir)
         processed_dir.mkdir(parents=True, exist_ok=True)
 
         occupation_metadata_path = processed_dir / "occupation_metadata.csv"
@@ -68,7 +69,7 @@ def run_ml_pipeline() -> None:
         print(f"\nFATAL ERROR: {e}")
         print(
             "Please ensure all required ESCO CSV files are in the directory "
-            f"configured by ESCO_DATA_DIR (currently: {settings.ESCO_DATA_DIR})."
+            f"configured by ESCO_DATA_DIR (currently: {settings.esco_data_dir})."
         )
         sys.exit(1)
     except Exception as e:

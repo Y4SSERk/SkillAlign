@@ -5,3 +5,6 @@ pydantic-settings
 neo4j
 faiss-cpu
 python-dotenv
+pandas
+sentence-transformers
+numpy

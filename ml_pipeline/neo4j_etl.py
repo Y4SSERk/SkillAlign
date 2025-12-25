@@ -7,9 +7,7 @@ from typing import Dict, List
 
 import pandas as pd
 from neo4j import GraphDatabase
-from dotenv import load_dotenv
-
-load_dotenv()  # expects NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD in .env
+from app.core.settings import get_settings
 
 
 def load_rich_esco_to_neo4j(raw_data: Dict[str, pd.DataFrame]) -> None:
@@ -43,9 +41,10 @@ def load_rich_esco_to_neo4j(raw_data: Dict[str, pd.DataFrame]) -> None:
       - s.inLanguageSkillsCollection
     """
 
-    uri = os.getenv("NEO4J_URI")
-    user = os.getenv("NEO4J_USER", "neo4j")
-    password = os.getenv("NEO4J_PASSWORD")
+    settings = get_settings()
+    uri = settings.neo4j_uri
+    user = settings.neo4j_user
+    password = settings.neo4j_password
 
     driver = GraphDatabase.driver(uri, auth=(user, password))
 
