@@ -11,6 +11,7 @@ import importlib
 from typing import Optional
 
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.deps import init_neo4j_client, close_neo4j_client
 from app.core.settings import get_settings
@@ -21,6 +22,20 @@ app = FastAPI(
     title="SkillAlign API",
     version="0.1.0",
     description="ML-powered occupation recommendation system using ESCO taxonomy"
+)
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
