@@ -1,0 +1,2 @@
+﻿app/(public)/page.tsx(2,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+components/layout/header.tsx(6,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
