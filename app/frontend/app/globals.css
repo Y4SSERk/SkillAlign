@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Enforce Dark Theme Base (Savee-like) */
+    --background: 0 0% 5%;
+    /* #0d0d0d Near Black */
+    --foreground: 0 0% 98%;
+    /* #fafafa */
+
+    /* Primary: Clean White/Off-White for prominence */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 5%;
+
+    /* Secondary: Muted Gray for easy reading on dark */
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Accent/Destructive: Kept minimal/red */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Muted: Subtle grays */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63.9%;
+
+    /* Popovers/Cards: Slightly lighter than bg or transparent */
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
+
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+
+    /* Borders: Very subtle dark gray */
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+
+    --ring: 0 0% 83.9%;
+    --radius: 0rem;
+    /* Sharper corners for editorial feel, or 0.25rem for slight soft */
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 98%;
+
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
