@@ -102,7 +102,7 @@ export default function LandingPage() {
             <footer className="mt-auto py-12 px-6 border-t border-white/5">
                 <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-sm text-muted-foreground font-light">
-                        <span className="font-medium text-primary">SkillAlign</span> &copy; 2024.
+                        <span className="font-medium text-primary">SkillAlign</span> &copy; 2026.
                         <span className="opacity-50 mx-2">|</span>
                         Grounded in <a href="https://esco.ec.europa.eu" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors underline decoration-white/20 underline-offset-4">ESCO Taxonomy v1.1</a>
                     </div>
